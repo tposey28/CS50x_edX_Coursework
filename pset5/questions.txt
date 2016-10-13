@@ -1,0 +1,41 @@
+0.  Merriam Webster dictionary says "a pneumoconiosis caused by inhalation of very fine silicate or quartz dust". It is also the
+largest word in the english language, and thus its length (45) is the maximum length of a word.
+
+1.  It gives resource usage statistics for the current calling process, and writes them to a given rusage structure.
+
+2.  16 variables.
+
+3.  If we didn't, it would require the system to copy more data. Since we're trying to measure performance, I imagine putting more
+work on the system would alter the performance statistics we are attempting to measure.
+
+4.  It opens the given text file and creates a file pointer (fp). If this worked, it will read character after character, checking
+each to see if it is valid. If the character is a letter or apostrophe, it is added to the string. If at any point the string is 
+longer than the largest possible word or includes a nonalphabetical character, it is discarded and the file pointer is pushed 
+forward to a new word. If a word is completed (a nonalphanumeric character) and valid, it is spell checked. Then, the loop continues
+to read characters and spell checking new words. It stops when it reaches an EOF character.
+
+5.  fscanf reads any number of non-whitespace characters. This will grab digits, symbols, and newline characters. With fgetc we can
+validate each character and stop midway through an invalid string, rather than postprocessing each string for validity.
+
+6.  Declaring parameters as const ensures they won't be altered (they are passed in as pointers and could be altered otherwise).
+
+7.  A trie with a pointer to an array of 27 trie pointers, for a-z and ', and a boolean variable reperesenting the end of a word.
+
+8.  About twice as slow as the staff's implementation, .18 s for the Austin Powers script.
+
+9.  I improved my recursive free function (it originally went one level deeper than needed, using an if null base case). I also
+initialized using calloc instead of malloc so that I could set data values without needing to access the newly allocated struct.
+Finally, my best optimization was using a dict_trie** variable in my dict_trie struct. This allowed me to have a pointer to an array
+of children, which I would only allocate if there were any children. This way, all leaf nodes didn't waste space allocating an array
+for children they would never have. This reduced my memory usage by ~40%.
+
+10. There are a few problems with mine. Unloading and loading take a while. Checking doesn't generally, since I'm using a trie. If I
+used a well formed hash table I'm sure my load/unload times would improve without a significant loss in check time. If I wanted to
+be really clever, I could improve my trie unloading by keeping a set or hashtable of all the addresses I've allocated. Implemented
+properly, this would reduce unload time to O(n) since I would just free each item in this set. For load times, I could reduce memory
+by finding some way to only allocate exactly what I need. That is, never allocating a full 27 byte array, but instead allocating 1
+or 2 bytes for the letters that actually exist. There might also be a way to use Hoffman encryptian on the addresses to reduce the 
+sizes, but that might be getting way too experimental. Might implement it later.
+
+P.S. For the fun of it I made sure my load function works on any text file (I think). That way, I can "spell check" the constitution
+using the Austin Powers script, or something like that. I guess that makes it more of a "word comparison" program.
