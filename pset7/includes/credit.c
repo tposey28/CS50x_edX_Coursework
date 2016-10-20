@@ -4,16 +4,21 @@ Hacker Set 1
 This file will classify a given credit card number as American Express,
 Mastercard, Visa, or invalid (not a real credit card number). This is done
 by computing the check sum and checking the length of given number.
-Program will ask for input again if the previous input contains was not
-purely numerical.*/
+Will print INVALID if checksum is not passed, otherwise will print
+AMEX for an American Express card, MASTERCARD, or VISA.*/
 #include <stdio.h>
 #include <cs50.h>
 #include <math.h>
+#include <stdlib.h>
 
-int main(void) 
+int main(int argc, string argv[]) 
 {
-    printf("Number: ");
-    long number = GetLongLong();
+    if (argc != 2)
+    {
+        return 1;
+    }
+    char* ptr;
+    long number = strtol(argv[1], &ptr, 10);
     int firstSum = 0;
     int secondSum = 0;
     int secondToLast = 1;
@@ -54,6 +59,7 @@ int main(void)
         }
     } else 
     {
-            printf("INVALID\n");
+        printf("INVALID\n");
     }
+    return 0;
 }
